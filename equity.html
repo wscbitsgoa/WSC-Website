@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Equity Research — Wall Street Club</title>
+<meta name="description" content="Equity research from Wall Street Club, BITS Pilani Goa — sector deep-dives, coverage initiations, and thematic research." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <a class="brand" href="choose.html">
+      <img src="assets/logo.jpeg" alt="Wall Street Club logo" />
+      <div class="brand-text">Wall Street Club<span>BITS Pilani, Goa</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="quant.html">Quant Finance</a>
+      <a href="equity.html" class="current">Equity Research</a>
+      <a href="equity.html#reports">Reports</a>
+      <a href="equity.html#events">Events</a>
+    </div>
+    <a href="join-us.html" class="nav-cta">Join the club</a>
+    <button class="nav-toggle" aria-label="Toggle menu" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="quant.html">Quant Finance</a>
+    <a href="equity.html">Equity Research</a>
+    <a href="equity.html#reports">Reports</a>
+    <a href="equity.html#events">Events</a>
+    <a href="join-us.html">Join the club</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="kicker">02 — Equity Research</div>
+        <h1>Fundamental conviction, backed by <em>rigorous</em> models.</h1>
+      </div>
+      <div class="hero-side">
+        <p>Sector deep-dives, coverage initiations, and thematic research — written with the discipline of client-facing equity research.</p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-primary">View projects</a>
+          <a href="#reports" class="btn btn-secondary">Browse reports</a>
+        </div>
+      </div>
+    </div>
+    <div class="ticker-outer">
+      <div class="ticker-track mono" id="tickerTrack"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="wrap stats-grid">
+      <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Active members</div></div>
+      <div class="stat"><div class="stat-num">12</div><div class="stat-label">Published projects</div></div>
+      <div class="stat"><div class="stat-num">9</div><div class="stat-label">Research reports</div></div>
+      <div class="stat"><div class="stat-num">2021</div><div class="stat-label">Founded</div></div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="section" id="projects">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="section-num">Projects</div>
+          <h2>Equity Research</h2>
+        </div>
+        <div class="section-desc">Fundamental analysis, sector deep-dives, and coverage initiations written by student analysts.</div>
+      </div>
+
+      <div class="subhead-row"><h3>Projects</h3><span class="count">Click a card for the full case study</span></div>
+
+      <div class="project-grid">
+        <div class="project-card">
+          <button class="project-card-head" onclick="toggleCard(this)">
+            <div class="project-tag">Initiation of Coverage</div>
+            <h4>Indian IT Services Sector Report</h4>
+            <p>A sector-wide initiation covering valuation, margin trends, and demand outlook across major listed IT services firms.</p>
+            <div class="project-stack">
+              <span class="stack-pill">DCF</span><span class="stack-pill">Comps</span><span class="stack-pill">Sector Report</span>
+            </div>
+            <div class="expand-hint"><span class="chev">›</span> View methodology &amp; coverage</div>
+          </button>
+          <div class="project-detail">
+            <div class="project-detail-inner">
+              <div class="detail-block">
+                <div class="db-label">APPROACH</div>
+                <p>Built bottom-up DCF and relative-comps models across major listed IT services names, layered with a top-down view on demand and margin trajectory.</p>
+              </div>
+              <div class="detail-block">
+                <div class="db-label">DATA</div>
+                <p>Company filings, quarterly earnings transcripts, and consensus estimates compiled across the coverage universe.</p>
+              </div>
+              <div class="detail-block">
+                <div class="db-label">RESULT</div>
+                <div class="metric-row">
+                  <div class="metric"><div class="mval">85%</div><div class="mlabel">Sector cap covered</div></div>
+                  <div class="metric"><div class="mval">7</div><div class="mlabel">Companies modeled</div></div>
+                  <div class="metric"><div class="mval">42pg</div><div class="mlabel">Report length</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <button class="project-card-head" onclick="toggleCard(this)">
+            <div class="project-tag">Single-Stock Deep Dive</div>
+            <h4>Consumer Retail Coverage Note</h4>
+            <p>A detailed earnings and valuation note on a leading Indian consumer retail name, with a modelled price target.</p>
+            <div class="project-stack">
+              <span class="stack-pill">Equity Model</span><span class="stack-pill">Earnings</span>
+            </div>
+            <div class="expand-hint"><span class="chev">›</span> View methodology &amp; results</div>
+          </button>
+          <div class="project-detail">
+            <div class="project-detail-inner">
+              <div class="detail-block">
+                <div class="db-label">APPROACH</div>
+                <p>Modeled store-level unit economics and same-store-sales growth to derive a 12-month price target, stress-tested across margin scenarios.</p>
+              </div>
+              <div class="detail-block">
+                <div class="db-label">DATA</div>
+                <p>Quarterly filings, management commentary, and category-level retail footfall data.</p>
+              </div>
+              <div class="detail-block">
+                <div class="db-label">RESULT</div>
+                <div class="metric-row">
+                  <div class="metric"><div class="mval">Buy</div><div class="mlabel">Rating issued</div></div>
+                  <div class="metric"><div class="mval">+18%</div><div class="mlabel">Target upside</div></div>
+                  <div class="metric"><div class="mval">12mo</div><div class="mlabel">Horizon</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <button class="project-card-head" onclick="toggleCard(this)">
+            <div class="project-tag">Thematic Research</div>
+            <h4>EV Supply Chain Thesis</h4>
+            <p>A thematic research note mapping investable opportunities across the Indian EV and battery supply chain.</p>
+            <div class="project-stack">
+              <span class="stack-pill">Thematic</span><span class="stack-pill">Supply Chain</span>
+            </div>
+            <div class="expand-hint"><span class="chev">›</span> View methodology &amp; coverage</div>
+          </button>
+          <div class="project-detail">
+            <div class="project-detail-inner">
+              <div class="detail-block">
+                <div class="db-label">APPROACH</div>
+                <p>Mapped the full EV value chain from cell manufacturing to OEM assembly, screening for listed pure-plays and second-order beneficiaries.</p>
+              </div>
+              <div class="detail-block">
+                <div class="db-label">DATA</div>
+                <p>Government policy filings, capex announcements, and import-substitution data across the battery supply chain.</p>
+              </div>
+              <div class="detail-block">
+                <div class="db-label">RESULT</div>
+                <div class="metric-row">
+                  <div class="metric"><div class="mval">14</div><div class="mlabel">Names screened</div></div>
+                  <div class="metric"><div class="mval">4</div><div class="mlabel">Pure-plays flagged</div></div>
+                  <div class="metric"><div class="mval">3yr</div><div class="mlabel">Thesis horizon</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subhead-row"><h3>Contributors</h3><span class="count">6 members</span></div>
+      <div class="member-grid">
+        <div class="member-card">
+          <div class="member-avatar">KL</div>
+          <div class="member-info"><div class="member-name">Member Name</div><div class="member-role">Equity Research Lead</div><div class="member-spec"><span class="spec-pill">Valuation</span><span class="spec-pill">IT Services</span></div></div>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar">MN</div>
+          <div class="member-info"><div class="member-name">Member Name</div><div class="member-role">Sector Analyst</div><div class="member-spec"><span class="spec-pill">Consumer</span></div></div>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar">OP</div>
+          <div class="member-info"><div class="member-name">Member Name</div><div class="member-role">Sector Analyst</div><div class="member-spec"><span class="spec-pill">Industrials</span></div></div>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar">QR</div>
+          <div class="member-info"><div class="member-name">Member Name</div><div class="member-role">Equity Analyst</div><div class="member-spec"><span class="spec-pill">Auto &amp; EV</span></div></div>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar">ST</div>
+          <div class="member-info"><div class="member-name">Member Name</div><div class="member-role">Equity Analyst</div><div class="member-spec"><span class="spec-pill">Financials</span></div></div>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar">UV</div>
+          <div class="member-info"><div class="member-name">Member Name</div><div class="member-role">Research Associate</div><div class="member-spec"><span class="spec-pill">Data &amp; Modeling</span></div></div>
+        </div>
+      </div>
+
+      <div class="placement-strip">
+        <span class="pl-label">Alumni have gone on to</span>
+        <div class="placement-list">
+          <span class="placement-pill">Equity Research Desks</span>
+          <span class="placement-pill">Investment Banking</span>
+          <span class="placement-pill">Asset Management</span>
+          <span class="placement-pill">Private Equity</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORTS LIBRARY -->
+  <section class="section" id="reports">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="section-num">Reports Library</div>
+          <h2>Research Reports</h2>
+        </div>
+        <div class="section-desc">Sector and equity research reports from the club, viewable and downloadable as they go live.</div>
+      </div>
+
+      <div class="reports-controls">
+        <button class="filter-btn active" onclick="filterReports('all', this)">All</button>
+        <button class="filter-btn" onclick="filterReports('sector', this)">Sector Research</button>
+        <button class="filter-btn" onclick="filterReports('equity', this)">Equity Research</button>
+        <input type="text" class="search-input" id="reportSearch" placeholder="Search reports…" oninput="searchReports()" />
+      </div>
+
+      <div class="report-table" id="reportTable">
+        <div class="report-row hdr">
+          <div>Report</div><div>Sector</div><div>Date</div><div style="text-align:right">Action</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTS -->
+  <section class="section" id="events">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="section-num">Events</div>
+          <h2>Events We Organise</h2>
+        </div>
+        <div class="section-desc">Competitions and sessions that bring quantitative thinking and market strategy to campus.</div>
+      </div>
+
+      <div class="event-list">
+        <div class="event-row">
+          <div class="event-date">NOV 2025</div>
+          <div class="event-info"><h4>Equity Pitch Night</h4><p>Student analysts pitch long/short equity theses to a panel of alumni and industry judges for feedback and critique.</p></div>
+          <div class="event-type">Competition</div>
+        </div>
+        <div class="event-row">
+          <div class="event-date">FEB 2026</div>
+          <div class="event-info"><h4>Quant Math Olympiad</h4><p>A timed problem-solving competition covering probability, combinatorics, and applied mathematics used in quant interviews.</p></div>
+          <div class="event-type">Competition</div>
+        </div>
+        <div class="event-row">
+          <div class="event-date">MAR 2026</div>
+          <div class="event-info"><h4>WSC Poker Championship</h4><p>A campus-wide No-Limit Hold'em tournament testing probabilistic thinking, risk management, and game theory under pressure.</p></div>
+          <div class="event-type">Competition</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SWITCH TO QUANT -->
+  <section class="switch-cta">
+    <div class="wrap">
+      <div class="sc-label">Also on the club</div>
+      <h2>Take a look at our Quant Finance work</h2>
+      <div class="dual-actions">
+        <a href="quant.html" class="btn btn-primary">Explore Quant Finance →</a>
+        <a href="work-with-us.html" class="btn btn-secondary">Work with us</a>
+        <a href="join-us.html" class="btn btn-secondary">Join us</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <a class="footer-brand" href="choose.html">
+        <img src="assets/logo.jpeg" alt="Wall Street Club logo" />
+        <div class="footer-brand-text">Wall Street Club<br>BITS Pilani, K.K. Birla Goa Campus</div>
+      </a>
+      <div class="footer-links">
+        <a href="quant.html">Quant Finance</a>
+        <a href="equity.html">Equity Research</a>
+        <a href="work-with-us.html">Work with us</a>
+        <a href="join-us.html">Join us</a>
+        <a href="mailto:wallstreetclub@goa.bits-pilani.ac.in">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Wall Street Club, BITS Pilani Goa. Student-run, not a registered investment adviser.</span>
+      <span>Built by the club, for the club.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="reportModal" onclick="if(event.target===this) closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+    <h3 id="modalTitle">Report title</h3>
+    <div class="m-meta" id="modalMeta">Sector · Date</div>
+    <p id="modalBody">Report preview text.</p>
+    <a href="#" class="btn btn-primary btn-small" id="modalDownload">Download PDF</a>
+  </div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>

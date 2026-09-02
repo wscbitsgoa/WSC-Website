@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quant Finance — Wall Street Club</title>
+<meta name="description" content="Quantitative finance and applied ML research from Wall Street Club, BITS Pilani Goa." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <a class="brand" href="choose.html">
+      <img src="assets/logo.jpeg" alt="Wall Street Club logo" />
+      <div class="brand-text">Wall Street Club<span>BITS Pilani, Goa</span></div>
+    </a>
+    <div class="nav-links">
+      <a href="quant.html" class="current">Quant Finance</a>
+      <a href="equity.html">Equity Research</a>
+      <a href="quant.html#reports">Reports</a>
+      <a href="quant.html#events">Events</a>
+    </div>
+    <a href="join-us.html" class="nav-cta">Join the club</a>
+    <button class="nav-toggle" aria-label="Toggle menu" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="quant.html">Quant Finance</a>
+    <a href="equity.html">Equity Research</a>
+    <a href="quant.html#reports">Reports</a>
+    <a href="quant.html#events">Events</a>
+    <a href="join-us.html">Join the club</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="kicker">01 — Quant Finance</div>
+        <h1>Where markets meet <em>machine learning</em>, one model at a time.</h1>
+      </div>
+      <div class="hero-side">
+        <p>Systematic strategy research, applied ML, and trading infrastructure — built with the rigor of client-facing work.</p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-primary">View projects</a>
+          <a href="#reports" class="btn btn-secondary">Browse reports</a>
+        </div>
+      </div>
+    </div>
+    <div class="ticker-outer">
+      <div class="ticker-track mono" id="tickerTrack"></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="wrap stats-grid">
+      <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Active members</div></div>
+      <div class="stat"><div class="stat-num">12</div><div class="stat-label">Published projects</div></div>
+      <div class="stat"><div class="stat-num">9</div><div class="stat-label">Research reports</div></div>
+      <div class="stat"><div class="stat-num">2021</div><div class="stat-label">Founded</div></div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="section" id="projects">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="section-num">Projects</div>
+          <h2>Quantitative Finance &amp; Applied ML</h2>
+        </div>
+        <div class="section-desc">Signal research, systematic strategy design, and machine learning applied to market data.</div>
+      </div>
+
+      <div class="subhead-row"><h3>Projects</h3><span class="count">Click a card for the full case study</span></div>
+
+      <div class="project-grid">
+        <div class="project-card">
+          <button class="project-card-head" onclick="toggleCard(this)">
+            <div class="project-tag">Volatility &amp; Derivatives</div>
+            <h4>Dispersion Trading Framework</h4>
+            <p>A systematic framework for pricing and executing index-vs-constituent dispersion trades, backtested on live paper positions.</p>
+            <div class="project-stack">
+              <span class="stack-pill">Python</span><span class="stack-pill">Alpaca API</span><span class="stack-pill">Options</span>
+            </div>
+            <div class="expand-hint"><span class="chev">›</span> View methodology &amp; results</div>
+          </button>
+          <div class="project-detail">
+            <div class="project-detail-inner">
+              <div class="detail-block">
+                <div class="db-label">APPROACH</div>
+                <p>Screened index constituents for implied-realized vol spread dislocation, constructed delta-hedged dispersion positions, and rebalanced weekly against index correlation shifts.</p>
+              </div>
+              <div class="detail-block">
+                <div class="db-label">DATA</div>
+                <p>Options chain and constituent price data pulled via the Alpaca API, cross-checked against index correlation matrices over an 18-month lookback window.</p>
+              </div>
+              <div class="detail-block">
+                <div class="db-label">RESULT</div>
+                <div class="metric-row">
+                  <div class="metric"><div class="mval">1.4</div><div class="mlabel">Backtest Sharpe</div></div>
+                  <div class="metric"><div class="mval">18mo</div><div class="mlabel">Sample window</div></div>
+                  <div class="metric"><div class="mval">-8.2%</div><div class="mlabel">Max drawdown</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <button class="project-card-head" onclick="toggleCard(this)">
+            <div class="project-tag">ML in Motorsport Markets</div>
+            <h4>F1 Race Pace Forecaster</h4>
+            <p>A machine learning model forecasting Formula 1 race pace and strategy outcomes from historical telemetry and timing data.</p>
+            <div class="project-stack">
+              <span class="stack-pill">pandas</span><span class="stack-pill">scikit-learn</span><span class="stack-pill">FastF1 API</span>
+            </div>
+            <div class="expand-hint"><span class="chev">›</span> View methodology &amp; results</div>
+          </button>
+          <div class="project-detail">
+            <div class="project-detail-inner">
+              <div class="detail-block">
+                <div class="db-label">APPROACH</div>
+                <p>Engineered lap-time, tyre-degradation, and pit-window features from telemetry, then trained gradient-boosted models to forecast race pace and undercut windows.</p>
+              </div>
+              <div class="detail-block">
+                <div class="db-label">DATA</div>
+                <p>Historical timing and telemetry sourced via the FastF1 API across multiple full seasons of race data.</p>
+              </div>
+              <div class="detail-block">
+                <div class="db-label">RESULT</div>
+                <div class="metric-row">
+                  <div class="metric"><div class="mval">0.89</div><div class="mlabel">R² pace fit</div></div>
+                  <div class="metric"><div class="mval">±0.3s</div><div class="mlabel">Lap-time error</div></div>
+                  <div class="metric"><div class="mval">6</div><div class="mlabel">Seasons trained on</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <button class="project-card-head" onclick="toggleCard(this)">
+            <div class="project-tag">Trading Infrastructure</div>
+            <h4>Paper Trading Simulator</h4>
+            <p>An in-house simulation platform letting members backtest and paper-trade strategies with real-time market data feeds.</p>
+            <div class="project-stack">
+              <span class="stack-pill">Full-stack</span><span class="stack-pill">Market Data</span><span class="stack-pill">In progress</span>
+            </div>
+            <div class="expand-hint"><span class="chev">›</span> View methodology &amp; status</div>
+          </button>
+          <div class="project-detail">
+            <div class="project-detail-inner">
+              <div class="detail-block">
+                <div class="db-label">APPROACH</div>
+                <p>Building a shared backtesting and paper-trading engine so members can prototype strategies against a common live data feed rather than one-off scripts.</p>
+              </div>
+              <div class="detail-block">
+                <div class="db-label">DATA</div>
+                <p>Real-time and historical market data feeds, integrated behind a unified strategy API for club-wide use.</p>
+              </div>
+              <div class="detail-block">
+                <div class="db-label">STATUS</div>
+                <div class="metric-row">
+                  <div class="metric"><div class="mval">Beta</div><div class="mlabel">Current stage</div></div>
+                  <div class="metric"><div class="mval">Q1</div><div class="mlabel">Full launch target</div></div>
+                  <div class="metric"><div class="mval">5</div><div class="mlabel">Engineers on build</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subhead-row"><h3>Contributors</h3><span class="count">6 members</span></div>
+      <div class="member-grid">
+        <div class="member-card">
+          <div class="member-avatar">HK</div>
+          <div class="member-info">
+            <div class="member-name">Harish Keerthimaan S</div>
+            <div class="member-role">Club Lead, Quant</div>
+            <div class="member-spec"><span class="spec-pill">Derivatives</span><span class="spec-pill">Systematic Strategy</span></div>
+          </div>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar">AB</div>
+          <div class="member-info">
+            <div class="member-name">Member Name</div>
+            <div class="member-role">Quant Researcher</div>
+            <div class="member-spec"><span class="spec-pill">ML Modeling</span><span class="spec-pill">Backtesting</span></div>
+          </div>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar">CD</div>
+          <div class="member-info">
+            <div class="member-name">Member Name</div>
+            <div class="member-role">ML Engineer</div>
+            <div class="member-spec"><span class="spec-pill">Feature Engineering</span></div>
+          </div>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar">EF</div>
+          <div class="member-info">
+            <div class="member-name">Member Name</div>
+            <div class="member-role">Quant Researcher</div>
+            <div class="member-spec"><span class="spec-pill">Vol Trading</span></div>
+          </div>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar">GH</div>
+          <div class="member-info">
+            <div class="member-name">Member Name</div>
+            <div class="member-role">Strategy Analyst</div>
+            <div class="member-spec"><span class="spec-pill">Portfolio Construction</span></div>
+          </div>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar">IJ</div>
+          <div class="member-info">
+            <div class="member-name">Member Name</div>
+            <div class="member-role">Data Engineer</div>
+            <div class="member-spec"><span class="spec-pill">Market Data Infra</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="placement-strip">
+        <span class="pl-label">Alumni have gone on to</span>
+        <div class="placement-list">
+          <span class="placement-pill">Bulge-bracket IB</span>
+          <span class="placement-pill">Prop Trading Firms</span>
+          <span class="placement-pill">Hedge Funds</span>
+          <span class="placement-pill">Quant Research Roles</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORTS LIBRARY -->
+  <section class="section" id="reports">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="section-num">Reports Library</div>
+          <h2>Research Reports</h2>
+        </div>
+        <div class="section-desc">Sector and equity research reports from the club, viewable and downloadable as they go live.</div>
+      </div>
+
+      <div class="reports-controls">
+        <button class="filter-btn active" onclick="filterReports('all', this)">All</button>
+        <button class="filter-btn" onclick="filterReports('sector', this)">Sector Research</button>
+        <button class="filter-btn" onclick="filterReports('equity', this)">Equity Research</button>
+        <input type="text" class="search-input" id="reportSearch" placeholder="Search reports…" oninput="searchReports()" />
+      </div>
+
+      <div class="report-table" id="reportTable">
+        <div class="report-row hdr">
+          <div>Report</div><div>Sector</div><div>Date</div><div style="text-align:right">Action</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTS -->
+  <section class="section" id="events">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <div class="section-num">Events</div>
+          <h2>Events We Organise</h2>
+        </div>
+        <div class="section-desc">Competitions and sessions that bring quantitative thinking and market strategy to campus.</div>
+      </div>
+
+      <div class="event-list">
+        <div class="event-row">
+          <div class="event-date">MAR 2026</div>
+          <div class="event-info"><h4>WSC Poker Championship</h4><p>A campus-wide No-Limit Hold'em tournament testing probabilistic thinking, risk management, and game theory under pressure.</p></div>
+          <div class="event-type">Competition</div>
+        </div>
+        <div class="event-row">
+          <div class="event-date">FEB 2026</div>
+          <div class="event-info"><h4>Quant Math Olympiad</h4><p>A timed problem-solving competition covering probability, combinatorics, and applied mathematics used in quant interviews.</p></div>
+          <div class="event-type">Competition</div>
+        </div>
+        <div class="event-row">
+          <div class="event-date">SEP 2025</div>
+          <div class="event-info"><h4>Intro to Quant Trading Workshop</h4><p>A hands-on session introducing new members to systematic strategy building, backtesting, and market microstructure.</p></div>
+          <div class="event-type">Workshop</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SWITCH TO EQUITY -->
+  <section class="switch-cta">
+    <div class="wrap">
+      <div class="sc-label">Also on the club</div>
+      <h2>Take a look at our Equity Research</h2>
+      <div class="dual-actions">
+        <a href="equity.html" class="btn btn-primary">Explore Equity Research →</a>
+        <a href="work-with-us.html" class="btn btn-secondary">Work with us</a>
+        <a href="join-us.html" class="btn btn-secondary">Join us</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <a class="footer-brand" href="choose.html">
+        <img src="assets/logo.jpeg" alt="Wall Street Club logo" />
+        <div class="footer-brand-text">Wall Street Club<br>BITS Pilani, K.K. Birla Goa Campus</div>
+      </a>
+      <div class="footer-links">
+        <a href="quant.html">Quant Finance</a>
+        <a href="equity.html">Equity Research</a>
+        <a href="work-with-us.html">Work with us</a>
+        <a href="join-us.html">Join us</a>
+        <a href="mailto:wallstreetclub@goa.bits-pilani.ac.in">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Wall Street Club, BITS Pilani Goa. Student-run, not a registered investment adviser.</span>
+      <span>Built by the club, for the club.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="reportModal" onclick="if(event.target===this) closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+    <h3 id="modalTitle">Report title</h3>
+    <div class="m-meta" id="modalMeta">Sector · Date</div>
+    <p id="modalBody">Report preview text.</p>
+    <a href="#" class="btn btn-primary btn-small" id="modalDownload">Download PDF</a>
+  </div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>

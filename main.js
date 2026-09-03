@@ -17,6 +17,7 @@ const tickerData = [
   {sym:'NASDAQ', px:'20,318.40', chg:'-0.15%', up:false},
   {sym:'CRUDE OIL', px:'74.62', chg:'-1.02%', up:false},
 ];
+
 function renderTicker(){
   const track = document.getElementById('tickerTrack');
   if(!track) return;
@@ -81,6 +82,7 @@ function filterReports(type, btn){
   btn.classList.add('active');
   renderReports();
 }
+
 function searchReports(){ renderReports(); }
 
 /* ---------- MODAL ---------- */
@@ -91,13 +93,15 @@ function openModal(idx){
   document.getElementById('modalBody').textContent = r.body;
   document.getElementById('reportModal').classList.add('open');
 }
+
 function closeModal(){
   const modal = document.getElementById('reportModal');
   if(modal) modal.classList.remove('open');
 }
+
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
 
-/* ---------- SPLASH CANVAS SHADER VISUALIZER ---------- */
+/* ---------- SPLASH CANVAS SHADER VISUALIZER (RESPONSIVE MESH GRADIENT) ---------- */
 function initSplashVisualizer() {
   const canvas = document.getElementById('splash-canvas');
   if (!canvas) return;
@@ -116,13 +120,14 @@ function initSplashVisualizer() {
     }
   `;
 
-  // Fragment Shader: Fluid Plasma Aurora mapped to theme colors
+  // Fragment Shader: Multi-point Interactive Mesh Gradient
   const fsSource = `
     precision mediump float;
     uniform vec2 u_resolution;
     uniform float u_time;
     uniform vec2 u_mouse;
 
+    // Simplex Noise Function
     vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
 
     float snoise(vec2 v){
@@ -130,16 +135,14 @@ function initSplashVisualizer() {
                -0.577350269189626, 0.024390243902439);
       vec2 i  = floor(v + dot(v, C.yy) );
       vec2 x0 = v -   i + dot(i, C.xx);
-      vec2 i1;
-      i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+      vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
       vec4 x12 = x0.xyxy + C.xxzz;
       x12.xy -= i1;
       i = mod(i, 289.0);
       vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
       + i.x + vec3(0.0, i1.x, 1.0 ));
       vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-      m = m*m ;
-      m = m*m ;
+      m = m*m; m = m*m;
       vec3 x = 2.0 * fract(p * C.www) - 1.0;
       vec3 h = abs(x) - 0.5;
       vec3 ox = floor(x + 0.5);
@@ -151,47 +154,54 @@ function initSplashVisualizer() {
       return 130.0 * dot(m, g);
     }
 
-    float fbm(vec2 st) {
-      float value = 0.0;
-      float amplitude = 0.5;
-      for (int i = 0; i < 4; i++) {
-        value += amplitude * snoise(st);
-        st *= 2.0;
-        amplitude *= 0.5;
-      }
-      return value;
-    }
-
     void main() {
+      // Normalized UV coordinates
       vec2 st = gl_FragCoord.xy / u_resolution.xy;
-      st.x *= u_resolution.x / u_resolution.y;
-
       vec2 mouseNorm = u_mouse / u_resolution;
 
-      vec2 q = vec2(0.0);
-      q.x = fbm(st + 0.05 * u_time);
-      q.y = fbm(st + vec2(1.0));
+      // Mouse displacement field (Cursor influence)
+      vec2 mouseOffset = st - mouseNorm;
+      float mouseDist = length(mouseOffset);
+      float mouseInfluence = smoothstep(0.4, 0.0, mouseDist);
+      
+      // Warp coordinates based on cursor proximity and organic noise
+      vec2 warp = vec2(
+        snoise(st * 2.0 + vec2(u_time * 0.15, 0.0)),
+        snoise(st * 2.0 + vec2(0.0, u_time * 0.15))
+      ) * 0.15;
 
-      vec2 r = vec2(0.0);
-      r.x = fbm(st + 1.0 * q + vec2(1.7, 9.2) + 0.15 * u_time + mouseNorm.x * 0.2);
-      r.y = fbm(st + 1.0 * q + vec2(8.3, 2.8) + 0.12 * u_time + mouseNorm.y * 0.2);
+      st += warp + (mouseOffset * mouseInfluence * 0.25);
 
-      float f = fbm(st + r);
+      // Mesh Control Points (Orbiting Mesh Color Nodes)
+      vec2 p1 = vec2(0.2 + 0.15 * sin(u_time * 0.3), 0.3 + 0.2 * cos(u_time * 0.2));
+      vec2 p2 = vec2(0.8 + 0.1 * cos(u_time * 0.25), 0.7 + 0.15 * sin(u_time * 0.35));
+      vec2 p3 = vec2(0.3 + 0.2 * cos(u_time * 0.4), 0.8 + 0.1 * sin(u_time * 0.2));
+      vec2 p4 = vec2(0.7 + 0.15 * sin(u_time * 0.2), 0.2 + 0.2 * cos(u_time * 0.3));
 
-      // Color Palette mapping (#0A0A0C, #5C63A0, #A9B4F5, #8FD4A8)
-      vec3 c1 = vec3(0.039, 0.039, 0.047); 
-      vec3 c2 = vec3(0.360, 0.388, 0.627); 
-      vec3 c3 = vec3(0.662, 0.705, 0.960); 
-      vec3 c4 = vec3(0.560, 0.831, 0.658); 
+      // Direct Cursor Color Point (attaches a mesh point to mouse position)
+      vec2 pMouse = mouseNorm;
 
-      vec3 color = mix(c1, c2, clamp(f * f * 4.0, 0.0, 1.0));
-      color = mix(color, c3, clamp(length(q), 0.0, 1.0));
-      color = mix(color, c4, clamp(length(r.x), 0.0, 1.0));
+      // Calculate smooth influence weights for mesh nodes
+      float w1 = 1.0 / (distance(st, p1) + 0.1);
+      float w2 = 1.0 / (distance(st, p2) + 0.1);
+      float w3 = 1.0 / (distance(st, p3) + 0.1);
+      float w4 = 1.0 / (distance(st, p4) + 0.1);
+      float wMouse = 1.0 / (distance(st, pMouse) + 0.15);
 
-      float distFromCenter = distance(gl_FragCoord.xy / u_resolution.xy, vec2(0.5));
-      float alpha = smoothstep(0.8, 0.2, distFromCenter);
+      // Color Palette (#0A0A0C, #5C63A0, #A9B4F5, #8FD4A8)
+      vec3 c1 = vec3(0.039, 0.039, 0.047); // Dark base background
+      vec3 c2 = vec3(0.360, 0.388, 0.627); // Deep accent
+      vec3 c3 = vec3(0.662, 0.705, 0.960); // Light primary accent
+      vec3 c4 = vec3(0.560, 0.831, 0.658); // Mint highlight accent
 
-      gl_FragColor = vec4(color * (f * 1.5 + 0.2), alpha * 0.85);
+      // Blend colors based on inverse distance weights
+      float totalWeight = w1 + w2 + w3 + w4 + wMouse;
+      vec3 finalColor = (c1 * 0.5 + c2 * w1 + c3 * w2 + c4 * w3 + c2 * w4 + c3 * (wMouse * 0.8)) / totalWeight;
+
+      // Subtle vignette towards edges
+      float vignette = smoothstep(1.2, 0.2, length(st - vec2(0.5)));
+
+      gl_FragColor = vec4(finalColor * vignette, 0.92);
     }
   `;
 
@@ -225,14 +235,18 @@ function initSplashVisualizer() {
   const timeLoc = gl.getUniformLocation(program, 'u_time');
   const mouseLoc = gl.getUniformLocation(program, 'u_mouse');
 
-  let mouseX = window.innerWidth / 2;
-  let mouseY = window.innerHeight / 2;
+  let targetMouseX = window.innerWidth / 2;
+  let targetMouseY = window.innerHeight / 2;
+  let currentMouseX = targetMouseX;
+  let currentMouseY = targetMouseY;
 
+  // Track mouse coordinates
   window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = window.innerHeight - e.clientY;
+    targetMouseX = e.clientX;
+    targetMouseY = window.innerHeight - e.clientY; // Invert Y for WebGL coordinates
   });
 
+  // Responsive Canvas Resize
   function resize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -246,9 +260,13 @@ function initSplashVisualizer() {
   function render() {
     const currentTime = (performance.now() - startTime) * 0.001;
 
+    // Smooth cursor interpolation (Ease-out effect)
+    currentMouseX += (targetMouseX - currentMouseX) * 0.08;
+    currentMouseY += (targetMouseY - currentMouseY) * 0.08;
+
     gl.uniform2f(resLoc, canvas.width, canvas.height);
     gl.uniform1f(timeLoc, currentTime);
-    gl.uniform2f(mouseLoc, mouseX, mouseY);
+    gl.uniform2f(mouseLoc, currentMouseX, currentMouseY);
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     requestAnimationFrame(render);

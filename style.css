@@ -144,6 +144,23 @@ nav{ max-width:1180px; margin:0 auto; padding:16px 32px; display:flex; align-ite
   box-shadow: 0 6px 24px rgba(169, 180, 245, 0.35);
 }
 
+/* Removes black background from logo image */
+.splash-logo-img {
+  max-width: 160px;
+  height: auto;
+  mix-blend-mode: screen; /* Drops black background completely */
+}
+
+/* Crops out text beneath the mark if embedded in image file */
+.logo-crop-frame {
+  width: 140px;
+  height: 140px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
 /* ---------- CHOOSE (choose.html) ---------- */
 .choose-wrap{ min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:120px 32px 60px; }
 .choose-head{ text-align:center; margin-bottom:56px; }

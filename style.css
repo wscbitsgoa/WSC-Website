@@ -77,47 +77,18 @@ nav{ max-width:1180px; margin:0 auto; padding:16px 32px; display:flex; align-ite
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
   padding: 32px;
   pointer-events: auto;
 }
 
 .splash-logo {
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   object-fit: contain;
-  margin-bottom: 12px;
+  opacity: 1;
   filter: drop-shadow(0 0 25px rgba(169, 180, 245, 0.25));
-  animation: splash-pulse 3.5s ease-in-out infinite;
 }
-
-@keyframes splash-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.78; transform: scale(0.97); }
-}
-
-.splash-content h1 {
-  font-size: clamp(28px, 4.5vw, 42px);
-  color: var(--text);
-  letter-spacing: -0.01em;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
-}
-
-.splash-content p {
-  color: var(--text-faint);
-  font-size: 13.5px;
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.06em;
-}
-
-.splash-content p .blink {
-  display: inline-block;
-  margin-left: 4px;
-  color: var(--accent);
-  animation: blink 1.4s step-end infinite;
-}
-
-@keyframes blink { 50% { opacity: 0; } }
 
 .splash-enter-btn {
   margin-top: 24px;
@@ -148,6 +119,7 @@ nav{ max-width:1180px; margin:0 auto; padding:16px 32px; display:flex; align-ite
 .splash-logo-img {
   max-width: 160px;
   height: auto;
+  opacity: 1;
   mix-blend-mode: screen; /* Drops black background completely */
 }
 
@@ -367,5 +339,5 @@ footer{ padding:56px 0 40px; border-top:1px solid var(--line); }
   .metric-row{grid-template-columns:1fr 1fr;}
   .choose-wrap{padding:100px 20px 40px;}
   .splash-content{padding:20px;}
-  .splash-logo{width:90px; height:90px;}
+  .splash-logo{width:110px; height:110px;}
 }

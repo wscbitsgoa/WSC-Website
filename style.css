@@ -83,18 +83,18 @@ nav{ max-width:1180px; margin:0 auto; padding:16px 32px; display:flex; align-ite
 }
 
 .splash-logo {
-  width: 140px;
-  height: 140px;
+  width: 220px;
+  height: 220px;
   object-fit: contain;
   opacity: 1;
   filter: drop-shadow(0 0 25px rgba(169, 180, 245, 0.25));
 }
 
 .splash-enter-btn {
-  margin-top: 24px;
-  padding: 12px 28px;
+  margin-top: 48px;
+  padding: 16px 40px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   color: var(--text);
   background: rgba(23, 23, 29, 0.65);
@@ -115,18 +115,19 @@ nav{ max-width:1180px; margin:0 auto; padding:16px 32px; display:flex; align-ite
   box-shadow: 0 6px 24px rgba(169, 180, 245, 0.35);
 }
 
-/* Removes black background from logo image */
+/* Removes dark background from logo image */
 .splash-logo-img {
-  max-width: 160px;
+  max-width: 240px;
   height: auto;
   opacity: 1;
-  mix-blend-mode: screen; /* Drops black background completely */
+  mix-blend-mode: screen;
+  filter: contrast(130%) brightness(90%);
 }
 
-/* Crops out text beneath the mark if embedded in image file */
+/* Frame container for logo */
 .logo-crop-frame {
-  width: 140px;
-  height: 140px;
+  width: 220px;
+  height: 220px;
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -339,5 +340,8 @@ footer{ padding:56px 0 40px; border-top:1px solid var(--line); }
   .metric-row{grid-template-columns:1fr 1fr;}
   .choose-wrap{padding:100px 20px 40px;}
   .splash-content{padding:20px;}
-  .splash-logo{width:110px; height:110px;}
+  .splash-logo{width:160px; height:160px;}
+  .logo-crop-frame{width:160px; height:160px;}
+  .splash-logo-img{max-width:180px;}
+  .splash-enter-btn{margin-top:32px; padding:14px 32px; font-size:14px;}
 }

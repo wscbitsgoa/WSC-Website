@@ -17,7 +17,6 @@ const tickerData = [
   {sym:'NASDAQ', px:'20,318.40', chg:'-0.15%', up:false},
   {sym:'CRUDE OIL', px:'74.62', chg:'-1.02%', up:false},
 ];
-
 function renderTicker(){
   const track = document.getElementById('tickerTrack');
   if(!track) return;
@@ -82,7 +81,6 @@ function filterReports(type, btn){
   btn.classList.add('active');
   renderReports();
 }
-
 function searchReports(){ renderReports(); }
 
 /* ---------- MODAL ---------- */
@@ -93,186 +91,128 @@ function openModal(idx){
   document.getElementById('modalBody').textContent = r.body;
   document.getElementById('reportModal').classList.add('open');
 }
-
 function closeModal(){
   const modal = document.getElementById('reportModal');
   if(modal) modal.classList.remove('open');
 }
-
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
 
-/* ---------- SPLASH CANVAS SHADER VISUALIZER (RESPONSIVE MESH GRADIENT) ---------- */
+/* ---------- SPLASH CANVAS VISUALIZER ---------- */
 function initSplashVisualizer() {
   const canvas = document.getElementById('splash-canvas');
   if (!canvas) return;
 
-  const gl = canvas.getContext('webgl');
-  if (!gl) {
-    console.warn('WebGL not supported on this browser.');
-    return;
-  }
+  const ctx = canvas.getContext('2d');
+  let width = (canvas.width = window.innerWidth);
+  let height = (canvas.height = window.innerHeight);
 
-  // Vertex Shader: Fullscreen Quad
-  const vsSource = `
-    attribute vec2 a_position;
-    void main() {
-      gl_Position = vec4(a_position, 0.0, 1.0);
-    }
-  `;
-
-  // Fragment Shader: Multi-point Interactive Mesh Gradient
-  const fsSource = `
-    precision mediump float;
-    uniform vec2 u_resolution;
-    uniform float u_time;
-    uniform vec2 u_mouse;
-
-    // Simplex Noise Function
-    vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
-
-    float snoise(vec2 v){
-      const vec4 C = vec4(0.211324865405187, 0.366025403784439,
-               -0.577350269189626, 0.024390243902439);
-      vec2 i  = floor(v + dot(v, C.yy) );
-      vec2 x0 = v -   i + dot(i, C.xx);
-      vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-      vec4 x12 = x0.xyxy + C.xxzz;
-      x12.xy -= i1;
-      i = mod(i, 289.0);
-      vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
-      + i.x + vec3(0.0, i1.x, 1.0 ));
-      vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-      m = m*m; m = m*m;
-      vec3 x = 2.0 * fract(p * C.www) - 1.0;
-      vec3 h = abs(x) - 0.5;
-      vec3 ox = floor(x + 0.5);
-      vec3 a0 = x - ox;
-      m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-      vec3 g;
-      g.x  = a0.x  * x0.x  + h.x  * x0.y;
-      g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-      return 130.0 * dot(m, g);
-    }
-
-    void main() {
-      // Normalized UV coordinates
-      vec2 st = gl_FragCoord.xy / u_resolution.xy;
-      vec2 mouseNorm = u_mouse / u_resolution;
-
-      // Mouse displacement field (Cursor influence)
-      vec2 mouseOffset = st - mouseNorm;
-      float mouseDist = length(mouseOffset);
-      float mouseInfluence = smoothstep(0.4, 0.0, mouseDist);
-      
-      // Warp coordinates based on cursor proximity and organic noise
-      vec2 warp = vec2(
-        snoise(st * 2.0 + vec2(u_time * 0.15, 0.0)),
-        snoise(st * 2.0 + vec2(0.0, u_time * 0.15))
-      ) * 0.15;
-
-      st += warp + (mouseOffset * mouseInfluence * 0.25);
-
-      // Mesh Control Points (Orbiting Mesh Color Nodes)
-      vec2 p1 = vec2(0.2 + 0.15 * sin(u_time * 0.3), 0.3 + 0.2 * cos(u_time * 0.2));
-      vec2 p2 = vec2(0.8 + 0.1 * cos(u_time * 0.25), 0.7 + 0.15 * sin(u_time * 0.35));
-      vec2 p3 = vec2(0.3 + 0.2 * cos(u_time * 0.4), 0.8 + 0.1 * sin(u_time * 0.2));
-      vec2 p4 = vec2(0.7 + 0.15 * sin(u_time * 0.2), 0.2 + 0.2 * cos(u_time * 0.3));
-
-      // Direct Cursor Color Point (attaches a mesh point to mouse position)
-      vec2 pMouse = mouseNorm;
-
-      // Calculate smooth influence weights for mesh nodes
-      float w1 = 1.0 / (distance(st, p1) + 0.1);
-      float w2 = 1.0 / (distance(st, p2) + 0.1);
-      float w3 = 1.0 / (distance(st, p3) + 0.1);
-      float w4 = 1.0 / (distance(st, p4) + 0.1);
-      float wMouse = 1.0 / (distance(st, pMouse) + 0.15);
-
-      // Color Palette (#0A0A0C, #5C63A0, #A9B4F5, #8FD4A8)
-      vec3 c1 = vec3(0.039, 0.039, 0.047); // Dark base background
-      vec3 c2 = vec3(0.360, 0.388, 0.627); // Deep accent
-      vec3 c3 = vec3(0.662, 0.705, 0.960); // Light primary accent
-      vec3 c4 = vec3(0.560, 0.831, 0.658); // Mint highlight accent
-
-      // Blend colors based on inverse distance weights
-      float totalWeight = w1 + w2 + w3 + w4 + wMouse;
-      vec3 finalColor = (c1 * 0.5 + c2 * w1 + c3 * w2 + c4 * w3 + c2 * w4 + c3 * (wMouse * 0.8)) / totalWeight;
-
-      // Subtle vignette towards edges
-      float vignette = smoothstep(1.2, 0.2, length(st - vec2(0.5)));
-
-      gl_FragColor = vec4(finalColor * vignette, 0.92);
-    }
-  `;
-
-  function createShader(gl, type, source) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    return shader;
-  }
-
-  const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
-  const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
-  const program = gl.createProgram();
-  gl.attachShader(program, vertexShader);
-  gl.attachShader(program, fragmentShader);
-  gl.linkProgram(program);
-  gl.useProgram(program);
-
-  const positionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    -1, -1,  1, -1, -1,  1,
-    -1,  1,  1, -1,  1,  1,
-  ]), gl.STATIC_DRAW);
-
-  const posLocation = gl.getAttribLocation(program, 'a_position');
-  gl.enableVertexAttribArray(posLocation);
-  gl.vertexAttribPointer(posLocation, 2, gl.FLOAT, false, 0, 0);
-
-  const resLoc = gl.getUniformLocation(program, 'u_resolution');
-  const timeLoc = gl.getUniformLocation(program, 'u_time');
-  const mouseLoc = gl.getUniformLocation(program, 'u_mouse');
-
-  let targetMouseX = window.innerWidth / 2;
-  let targetMouseY = window.innerHeight / 2;
-  let currentMouseX = targetMouseX;
-  let currentMouseY = targetMouseY;
-
-  // Track mouse coordinates
-  window.addEventListener('mousemove', (e) => {
-    targetMouseX = e.clientX;
-    targetMouseY = window.innerHeight - e.clientY; // Invert Y for WebGL coordinates
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
   });
 
-  // Responsive Canvas Resize
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    gl.viewport(0, 0, canvas.width, canvas.height);
-  }
-  window.addEventListener('resize', resize);
-  resize();
+  // Track cursor position for interactive particle attraction
+  const mouse = { x: width / 2, y: height / 2, active: false };
+  window.addEventListener('mousemove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    mouse.active = true;
+  });
 
-  let startTime = performance.now();
-
-  function render() {
-    const currentTime = (performance.now() - startTime) * 0.001;
-
-    // Smooth cursor interpolation (Ease-out effect)
-    currentMouseX += (targetMouseX - currentMouseX) * 0.08;
-    currentMouseY += (targetMouseY - currentMouseY) * 0.08;
-
-    gl.uniform2f(resLoc, canvas.width, canvas.height);
-    gl.uniform1f(timeLoc, currentTime);
-    gl.uniform2f(mouseLoc, currentMouseX, currentMouseY);
-
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-    requestAnimationFrame(render);
+  // Create ambient background market nodes/particles
+  const particleCount = Math.floor(Math.min(width, height) / 12);
+  const particles = [];
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: (Math.random() - 0.5) * 0.6,
+      radius: Math.random() * 1.8 + 1,
+    });
   }
 
-  render();
+  let step = 0;
+
+  function animate() {
+    // Clear canvas with subtle dark fill
+    ctx.fillStyle = '#0A0A0C';
+    ctx.fillRect(0, 0, width, height);
+
+    // 1. Draw Sine Waves (Market volatility simulation)
+    const waveColors = [
+      'rgba(169, 180, 245, 0.25)', // Accent Blue
+      'rgba(143, 212, 168, 0.15)', // Green
+      'rgba(92, 99, 160, 0.20)'   // Accent Dim
+    ];
+
+    waveColors.forEach((color, index) => {
+      ctx.beginPath();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = color;
+
+      for (let x = 0; x <= width; x += 8) {
+        const freq = 0.003 + index * 0.001;
+        const speed = step * (0.015 + index * 0.005);
+        const amplitude = 35 + index * 15;
+        const y = height / 2 + Math.sin(x * freq + speed) * amplitude + Math.cos((x + step) * 0.002) * 15;
+
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    });
+
+    // 2. Draw Floating Data Nodes & Constellations
+    ctx.fillStyle = 'rgba(169, 180, 245, 0.6)';
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // Bounce off screen boundaries
+      if (p.x < 0 || p.x > width) p.vx *= -1;
+      if (p.y < 0 || p.y > height) p.vy *= -1;
+
+      // Gentle interactive drift towards cursor
+      if (mouse.active) {
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 180) {
+          p.x += (dx / dist) * 0.4;
+          p.y += (dy / dist) * 0.4;
+        }
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Connect nearby nodes with thin network lines
+      for (let j = i + 1; j < particles.length; j++) {
+        const p2 = particles[j];
+        const dx = p.x - p2.x;
+        const dy = p.y - p2.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 110) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(169, 180, 245, ${0.15 * (1 - dist / 110)})`;
+          ctx.lineWidth = 0.8;
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    step++;
+    requestAnimationFrame(animate);
+  }
+
+  animate();
 }
 
 /* ---------- INIT ---------- */

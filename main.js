@@ -97,122 +97,164 @@ function closeModal(){
 }
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
 
-/* ---------- SPLASH CANVAS VISUALIZER ---------- */
+/* ---------- SPLASH CANVAS SHADER VISUALIZER ---------- */
 function initSplashVisualizer() {
   const canvas = document.getElementById('splash-canvas');
   if (!canvas) return;
 
-  const ctx = canvas.getContext('2d');
-  let width = (canvas.width = window.innerWidth);
-  let height = (canvas.height = window.innerHeight);
-
-  window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  });
-
-  // Track cursor position for interactive particle attraction
-  const mouse = { x: width / 2, y: height / 2, active: false };
-  window.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-    mouse.active = true;
-  });
-
-  // Create ambient background market nodes/particles
-  const particleCount = Math.floor(Math.min(width, height) / 12);
-  const particles = [];
-  for (let i = 0; i < particleCount; i++) {
-    particles.push({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: (Math.random() - 0.5) * 0.6,
-      radius: Math.random() * 1.8 + 1,
-    });
+  const gl = canvas.getContext('webgl');
+  if (!gl) {
+    console.warn('WebGL not supported on this browser.');
+    return;
   }
 
-  let step = 0;
+  // Vertex Shader: Fullscreen Quad
+  const vsSource = `
+    attribute vec2 a_position;
+    void main() {
+      gl_Position = vec4(a_position, 0.0, 1.0);
+    }
+  `;
 
-  function animate() {
-    // Clear canvas with subtle dark fill
-    ctx.fillStyle = '#0A0A0C';
-    ctx.fillRect(0, 0, width, height);
+  // Fragment Shader: Fluid Plasma Aurora mapped to theme colors
+  const fsSource = `
+    precision mediump float;
+    uniform vec2 u_resolution;
+    uniform float u_time;
+    uniform vec2 u_mouse;
 
-    // 1. Draw Sine Waves (Market volatility simulation)
-    const waveColors = [
-      'rgba(169, 180, 245, 0.25)', // Accent Blue
-      'rgba(143, 212, 168, 0.15)', // Green
-      'rgba(92, 99, 160, 0.20)'   // Accent Dim
-    ];
+    vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
 
-    waveColors.forEach((color, index) => {
-      ctx.beginPath();
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = color;
-
-      for (let x = 0; x <= width; x += 8) {
-        const freq = 0.003 + index * 0.001;
-        const speed = step * (0.015 + index * 0.005);
-        const amplitude = 35 + index * 15;
-        const y = height / 2 + Math.sin(x * freq + speed) * amplitude + Math.cos((x + step) * 0.002) * 15;
-
-        if (x === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-    });
-
-    // 2. Draw Floating Data Nodes & Constellations
-    ctx.fillStyle = 'rgba(169, 180, 245, 0.6)';
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-
-      p.x += p.vx;
-      p.y += p.vy;
-
-      // Bounce off screen boundaries
-      if (p.x < 0 || p.x > width) p.vx *= -1;
-      if (p.y < 0 || p.y > height) p.vy *= -1;
-
-      // Gentle interactive drift towards cursor
-      if (mouse.active) {
-        const dx = mouse.x - p.x;
-        const dy = mouse.y - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 180) {
-          p.x += (dx / dist) * 0.4;
-          p.y += (dy / dist) * 0.4;
-        }
-      }
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Connect nearby nodes with thin network lines
-      for (let j = i + 1; j < particles.length; j++) {
-        const p2 = particles[j];
-        const dx = p.x - p2.x;
-        const dy = p.y - p2.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 110) {
-          ctx.beginPath();
-          ctx.strokeStyle = `rgba(169, 180, 245, ${0.15 * (1 - dist / 110)})`;
-          ctx.lineWidth = 0.8;
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(p2.x, p2.y);
-          ctx.stroke();
-        }
-      }
+    float snoise(vec2 v){
+      const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+               -0.577350269189626, 0.024390243902439);
+      vec2 i  = floor(v + dot(v, C.yy) );
+      vec2 x0 = v -   i + dot(i, C.xx);
+      vec2 i1;
+      i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+      vec4 x12 = x0.xyxy + C.xxzz;
+      x12.xy -= i1;
+      i = mod(i, 289.0);
+      vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+      + i.x + vec3(0.0, i1.x, 1.0 ));
+      vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+      m = m*m ;
+      m = m*m ;
+      vec3 x = 2.0 * fract(p * C.www) - 1.0;
+      vec3 h = abs(x) - 0.5;
+      vec3 ox = floor(x + 0.5);
+      vec3 a0 = x - ox;
+      m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+      vec3 g;
+      g.x  = a0.x  * x0.x  + h.x  * x0.y;
+      g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+      return 130.0 * dot(m, g);
     }
 
-    step++;
-    requestAnimationFrame(animate);
+    float fbm(vec2 st) {
+      float value = 0.0;
+      float amplitude = 0.5;
+      for (int i = 0; i < 4; i++) {
+        value += amplitude * snoise(st);
+        st *= 2.0;
+        amplitude *= 0.5;
+      }
+      return value;
+    }
+
+    void main() {
+      vec2 st = gl_FragCoord.xy / u_resolution.xy;
+      st.x *= u_resolution.x / u_resolution.y;
+
+      vec2 mouseNorm = u_mouse / u_resolution;
+
+      vec2 q = vec2(0.0);
+      q.x = fbm(st + 0.05 * u_time);
+      q.y = fbm(st + vec2(1.0));
+
+      vec2 r = vec2(0.0);
+      r.x = fbm(st + 1.0 * q + vec2(1.7, 9.2) + 0.15 * u_time + mouseNorm.x * 0.2);
+      r.y = fbm(st + 1.0 * q + vec2(8.3, 2.8) + 0.12 * u_time + mouseNorm.y * 0.2);
+
+      float f = fbm(st + r);
+
+      // Color Palette mapping (#0A0A0C, #5C63A0, #A9B4F5, #8FD4A8)
+      vec3 c1 = vec3(0.039, 0.039, 0.047); 
+      vec3 c2 = vec3(0.360, 0.388, 0.627); 
+      vec3 c3 = vec3(0.662, 0.705, 0.960); 
+      vec3 c4 = vec3(0.560, 0.831, 0.658); 
+
+      vec3 color = mix(c1, c2, clamp(f * f * 4.0, 0.0, 1.0));
+      color = mix(color, c3, clamp(length(q), 0.0, 1.0));
+      color = mix(color, c4, clamp(length(r.x), 0.0, 1.0));
+
+      float distFromCenter = distance(gl_FragCoord.xy / u_resolution.xy, vec2(0.5));
+      float alpha = smoothstep(0.8, 0.2, distFromCenter);
+
+      gl_FragColor = vec4(color * (f * 1.5 + 0.2), alpha * 0.85);
+    }
+  `;
+
+  function createShader(gl, type, source) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    return shader;
   }
 
-  animate();
+  const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+  const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+  const program = gl.createProgram();
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  gl.linkProgram(program);
+  gl.useProgram(program);
+
+  const positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    -1, -1,  1, -1, -1,  1,
+    -1,  1,  1, -1,  1,  1,
+  ]), gl.STATIC_DRAW);
+
+  const posLocation = gl.getAttribLocation(program, 'a_position');
+  gl.enableVertexAttribArray(posLocation);
+  gl.vertexAttribPointer(posLocation, 2, gl.FLOAT, false, 0, 0);
+
+  const resLoc = gl.getUniformLocation(program, 'u_resolution');
+  const timeLoc = gl.getUniformLocation(program, 'u_time');
+  const mouseLoc = gl.getUniformLocation(program, 'u_mouse');
+
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+
+  window.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = window.innerHeight - e.clientY;
+  });
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  let startTime = performance.now();
+
+  function render() {
+    const currentTime = (performance.now() - startTime) * 0.001;
+
+    gl.uniform2f(resLoc, canvas.width, canvas.height);
+    gl.uniform1f(timeLoc, currentTime);
+    gl.uniform2f(mouseLoc, mouseX, mouseY);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    requestAnimationFrame(render);
+  }
+
+  render();
 }
 
 /* ---------- INIT ---------- */
